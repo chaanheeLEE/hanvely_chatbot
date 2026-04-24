@@ -9,7 +9,12 @@ def download_youtube_video(url, output_path="temp_video.mp4"):
         'format': 'best[ext=mp4]/best', 
         'outtmpl': output_path,
         'noplaylist': True,
-        'quiet': True
+        'quiet': True,
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'web']
+            }
+        }
     }
     print("유튜브 영상을 다운로드 중입니다...")
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
