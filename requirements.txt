@@ -13,7 +13,7 @@ huggingface_hub==0.36.2
 langchain==1.2.10
 langchain-core==1.2.15
 langchain-openai==1.1.10
-langchain-pinecone==0.2.13
+#langchain-pinecone==0.2.13
 langchain-upstage==0.7.6
 langgraph==1.0.9
 langgraph-checkpoint==4.0.0
