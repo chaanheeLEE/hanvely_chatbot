@@ -2,10 +2,10 @@ aiohappyeyeballs==2.6.1
 aiohttp==3.13.3
 aiohttp-retry==2.9.1
 aiosignal==1.4.0
-anaconda-anon-usage @ file:///opt/miniconda3/conda-bld/anaconda-anon-usage_1764636648062/work
-anaconda-auth @ file:///C:/miniconda3/conda-bld/anaconda-cloud-auth-split_1765839853030/work
-anaconda-cli-base @ file:///C:/miniconda3/conda-bld/anaconda-cli-base_1764888883727/work
-annotated-types @ file:///C:/miniconda3/conda-bld/annotated-types_1761745107361/work
+# anaconda-anon-usage @ file:///opt/miniconda3/conda-bld/anaconda-anon-usage_1764636648062/work
+# anaconda-auth @ file:///C:/miniconda3/conda-bld/anaconda-cloud-auth-split_1765839853030/work
+# anaconda-cli-base @ file:///C:/miniconda3/conda-bld/anaconda-cli-base_1764888883727/work
+# annotated-types @ file:///C:/miniconda3/conda-bld/annotated-types_1761745107361/work
 anyio==4.12.1
 archspec @ file:///home/task_175812491784513/conda-bld/archspec_1758124989039/work
 attrs==25.4.0
