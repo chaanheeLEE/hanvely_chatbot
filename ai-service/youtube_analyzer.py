@@ -1,65 +1,14 @@
-import os
-import time
-import yt_dlp
 from google import genai
 
-def download_youtube_video(url, output_path="temp_video.mp4"):
-    import streamlit as st
-    # Streamlit Cloud 환경에서 st.secrets에 저장된 쿠키를 파일로 생성
-    if not os.path.exists('cookies.txt'):
-        try:
-            if "YOUTUBE_COOKIES" in st.secrets:
-                with open('cookies.txt', 'w', encoding='utf-8') as f:
-                    f.write(st.secrets["YOUTUBE_COOKIES"])
-        except Exception:
-            pass
-
-    ydl_opts = {
-        # 쇼츠(세로 영상)는 높이가 1080, 1280이므로 height 제한을 풀거나 범용적인 mp4 선택
-        'format': 'best[ext=mp4]/best', 
-        'outtmpl': output_path,
-        'noplaylist': True,
-        'quiet': True,
-        'cookiefile': 'cookies.txt',
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['android', 'web']
-            }
-        }
-    }
-    print("유튜브 영상을 다운로드 중입니다...")
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([url])
-    print("다운로드 완료!")
-    return output_path
-
-def analyze_video_with_gemini(video_path):
+def analyze_youtube_url_with_gemini(youtube_url):
     """
-    Google Gemini API를 이용해 다운로드된 영상을 분석합니다.
+    Google Gemini API를 이용해 다운로드 없이 YouTube 링크를 직접 분석합니다.
     """
+    from google.genai import types
     # 환경변수에 GEMINI_API_KEY 가 설정되어 있어야 합니다.
     client = genai.Client()
     
-    print("Gemini에 영상을 업로드하고 있습니다...")
-    video_file = client.files.upload(file=video_path)
-    
-    # 업로드가 완료되었으므로 로컬 임시 영상 파일은 삭제합니다.
-    try:
-        if os.path.exists(video_path):
-            os.remove(video_path)
-    except Exception as e:
-        print(f"임시 파일 삭제 실패: {e}")
-        
-    # 영상 처리(Processing)가 끝날 때까지 대기
-    print("영상을 처리하는 중입니다. 잠시만 기다려주세요...")
-    while video_file.state == "PROCESSING":
-        time.sleep(2)
-        video_file = client.files.get(name=video_file.name)
-        
-    if video_file.state == "FAILED":
-        raise Exception("비디오 처리 실패")
-        
-    print("영상 처리 완료! 분석을 시작합니다.")
+    print("Gemini API에 YouTube 링크를 전송하여 분석을 시작합니다...")
 
     prompt = """
         당신은 교통사고 전문 분석관입니다. 
@@ -72,10 +21,14 @@ def analyze_video_with_gemini(video_path):
 
     response = client.models.generate_content(
         model='gemini-3-flash-preview',
-        contents=[
-            video_file,
-            prompt
-        ]
+        contents=types.Content(
+            parts=[
+                types.Part(
+                    file_data=types.FileData(file_uri=youtube_url)
+                ),
+                types.Part.from_text(text=prompt)
+            ]
+        )
     )
     
     return response.text
