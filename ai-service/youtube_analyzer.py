@@ -4,12 +4,23 @@ import yt_dlp
 from google import genai
 
 def download_youtube_video(url, output_path="temp_video.mp4"):
+    import streamlit as st
+    # Streamlit Cloud 환경에서 st.secrets에 저장된 쿠키를 파일로 생성
+    if not os.path.exists('cookies.txt'):
+        try:
+            if "YOUTUBE_COOKIES" in st.secrets:
+                with open('cookies.txt', 'w', encoding='utf-8') as f:
+                    f.write(st.secrets["YOUTUBE_COOKIES"])
+        except Exception:
+            pass
+
     ydl_opts = {
         # 쇼츠(세로 영상)는 높이가 1080, 1280이므로 height 제한을 풀거나 범용적인 mp4 선택
         'format': 'best[ext=mp4]/best', 
         'outtmpl': output_path,
         'noplaylist': True,
         'quiet': True,
+        'cookiefile': 'cookies.txt',
         'extractor_args': {
             'youtube': {
                 'player_client': ['android', 'web']
